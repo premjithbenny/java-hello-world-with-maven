@@ -1,0 +1,32 @@
+pipeline {
+    agent any
+    tools {
+        maven 'maven-local'
+        jdk 'jdk'
+    }
+    stages{
+        stage('build'){
+            steps{
+            git 'https://github.com/premjithbenny/java-hello-world-with-maven.git'
+            sh 'mvn -Dmaven.test.failure.ignore=true install'
+            }
+        }
+        stage('Docker image '){
+            steps{
+            sh 'sudo docker build -t premjithbenny/jenkins .'
+            }
+        }
+         stage('Dockerhub'){
+            steps{
+                script{
+                    withCredentials([string(credentialsId: 'dockerhub', variable: 'passwd')]) {
+                        sh 'sudo docker login -u premjithbenny -p ${passwd}'
+                        sh 'sudo docker push premjithbenny/jenkins'
+
+                        }
+                }
+            
+            }
+        }
+    }
+}
