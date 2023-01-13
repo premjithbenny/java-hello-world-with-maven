@@ -28,7 +28,7 @@ pipeline {
             
             }
         }
-        Stage('deployee'){
+        stage('deployee'){
         steps{
         sh 'sudo docker run -dt -p 82:80 premjithbenny/jenkins'
             }
